@@ -27,13 +27,15 @@ namespace csharp_test
     {
         static void Main(string[] args)
         {
+            string user = "yourname";
+            string pass = "yourpassword";
             string sourceCode = @"use strict;use warnings;print ""No"";";
             sourceCode = sourceCode.Replace("@", System.Environment.NewLine);
             Ideone_Service client = new Ideone_Service();   // instantiating the stub
             Dictionary<string, string> result = new Dictionary<string, string>();
             
             // Creating a submission for the sourceCode
-            Object[] ret = client.createSubmission("ptusk", "password", sourceCode, 3, "4", true, false);
+            Object[] ret = client.createSubmission(user, pass , sourceCode, 3, "4", true, false);
 
             Stopwatch timer = new Stopwatch();
 
@@ -42,7 +44,7 @@ namespace csharp_test
             // checking if everything went OK. If it did the program could be in various stages of the compilation process
             if (result["error"] == "OK")
             {
-                Object[] status = client.getSubmissionStatus("ptusk", "password", result["link"]);
+                Object[] status = client.getSubmissionStatus(user, pass, result["link"]);
                 Dictionary<string, string> status_result = new Dictionary<string, string>();
                 Dictionary<string, string> submission_result = new Dictionary<string, string>();
                 status_result = GetXmlData(status);
@@ -56,7 +58,7 @@ namespace csharp_test
                     while (current_status != 0)
                     {
                         System.Threading.Thread.Sleep(5000);
-                        Object[] statuss = client.getSubmissionStatus("ptusk", "password", result["link"]);
+                        Object[] statuss = client.getSubmissionStatus(user, pass, result["link"]);
                         Dictionary<string, string> statuss_result = new Dictionary<string, string>();
                         statuss_result = GetXmlData(statuss);
                         current_status = Int32.Parse(statuss_result["status"]);
@@ -64,7 +66,7 @@ namespace csharp_test
                         // The program is compiled
                         if (current_status == 0)
                         {
-                            Object[] objj = client.getSubmissionDetails("ptusk", "password", result["link"], true, true, true, true, true);                            
+                            Object[] objj = client.getSubmissionDetails(user, pass, result["link"], true, true, true, true, true);                            
                             submission_result = GetXmlData(objj);
                             timer.Stop();
                             break;
